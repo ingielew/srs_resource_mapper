@@ -11,6 +11,8 @@ class SrsResourceMapper:
         self.__k_tc = ue_config.get_transmission_comb()
         self.__m_srs_bw_config = srs_3gpp.bw_config_dict.get(self.__cell_bandwidth)
         self.__get_srs_config()
+        print("SrsResourceMapper: cell_bw", self.__cell_bandwidth, 'cell_type', self.__cell_type, 'srs_cell_bw_config', self.__srs_cell_bw_config, \
+            'srs_bw_config', self.__srs_bw_config, 'k_tc', self.__k_tc, 'm_srs', self.__m_srs, 'N_b', self.__N_b)
 
     def __get_srs_config(self):
         self.__m_srs = self.__m_srs_bw_config[self.__srs_cell_bw_config][self.__srs_bw_config][srs_3gpp.m_srs_position]
@@ -23,7 +25,6 @@ class SrsResourceMapper:
     def __calc_sounding_sequence_length(self, b):
         m_srs_b = self.__m_srs_bw_config[self.__srs_cell_bw_config][b][srs_3gpp.m_srs_position]
         m_sc_b_rs = m_srs_b*srs_3gpp.N_sc_RB/srs_3gpp.K_tc
-        print('__calc_sounding_sequence_length, b', b, 'm_sc_b_rs', m_sc_b_rs)
         return m_sc_b_rs
 
     def __calc_freq_domain_starting_point(self, freq_domain_config, tti):
