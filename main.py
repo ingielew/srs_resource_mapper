@@ -1,4 +1,6 @@
 import srs_resource_mapper
+import cell_config
+import ue_config
 import srs_utilities as srs_3gpp
 import numpy
 import matplotlib.pyplot as pyplt
@@ -7,9 +9,12 @@ srs_cell_bandwidth_config = 0
 srs_bandwidth_config = 0
 transmission_comb = 0
 cell_bandwidth = '10'
+cell_type = 'FDD'
 
+cell_configuration = cell_config.CellConfig(cell_bandwidth, cell_type, srs_cell_bandwidth_config)
+ue_configuration = ue_config.UeConfig(srs_bandwidth_config, transmission_comb)
 
-srs_resource_mapper_ent = srs_resource_mapper.SrsResourceMapper(cell_bandwidth, 'FDD', srs_cell_bandwidth_config, srs_bandwidth_config, transmission_comb)
+srs_resource_mapper_ent = srs_resource_mapper.SrsResourceMapper(cell_configuration, ue_configuration)
 avail_freq_domain_pos = srs_resource_mapper_ent.get_available_freq_domain_pos()
 avail_freq_domain_pos = 1
 resource_map = [0]*srs_3gpp.N_UL_sc.get(cell_bandwidth)

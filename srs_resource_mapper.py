@@ -1,17 +1,15 @@
 import srs_utilities as srs_3gpp
-import cell_config
-import ue_config
 import math
 
 
 class SrsResourceMapper:
     def __init__(self, cell_config, ue_config):
-        self.__cell_bandwidth = _cell_bw
-        self.__cell_type = _cell_type
-        self.__srs_cell_bw_config = _srs_cell_config
-        self.__srs_bw_config = _srs_config
-        self.__k_tc = _transmission_comb
-        self.__m_srs_bw_config = srs_3gpp.bw_config_dict.get(_cell_bw)
+        self.__cell_bandwidth = cell_config.get_cell_bw()
+        self.__cell_type = cell_config.get_cell_type()
+        self.__srs_cell_bw_config = cell_config.get_srs_cell_bw_config()
+        self.__srs_bw_config = ue_config.get_srs_bw_config()
+        self.__k_tc = ue_config.get_transmission_comb()
+        self.__m_srs_bw_config = srs_3gpp.bw_config_dict.get(self.__cell_bandwidth)
         self.__get_srs_config()
 
     def __get_srs_config(self):
