@@ -26,7 +26,7 @@ y_axis = numpy.zeros_like(resource_map)
 
 for freq_domain_pos in range(0, 1):
     current_freq_group_val = 0
-    for tti in range(0, 10):
+    for tti in range(0, srs_3gpp.ttis_in_hyperframe):
         resource_map = srs_resource_mapper_ent.get_srs_resource_fd_map(tti, freq_domain_pos, resource_map)
 
     for i in range(len(resource_map)):
