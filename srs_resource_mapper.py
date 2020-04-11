@@ -77,10 +77,10 @@ class SrsResourceMapper:
     def get_srs_resource_fd_map(self, tti, freq_domain_config, resource_map_fd):
         freq_domain_starting_point = self.__calc_freq_domain_starting_point(freq_domain_config, tti)
         freq_domain_seq_length = self.__calc_sounding_sequence_length(self.__srs_bw_config)
-        # print('tti', tti, 'freq_domain_config', freq_domain_config, 'freq_domain_starting_point', freq_domain_starting_point, 'freq_domain_seq_length', freq_domain_seq_length)
+        #print('tti', tti, 'freq_domain_config', freq_domain_config, 'freq_domain_starting_point', freq_domain_starting_point, 'freq_domain_seq_length', freq_domain_seq_length)
 
         for k in range(int(freq_domain_starting_point), int(freq_domain_starting_point+freq_domain_seq_length*2), 2):
-            resource_map_fd[k] = 1
+            resource_map_fd[k] = freq_domain_starting_point
         return resource_map_fd
 
     __m_srs_bw_config = None
