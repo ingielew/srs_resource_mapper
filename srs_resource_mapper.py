@@ -11,6 +11,7 @@ class SrsResourceMapper:
         self.__k_tc = ue_config.get_transmission_comb()
         self.__m_srs_bw_config = srs_3gpp.bw_config_dict.get(self.__cell_bandwidth)
         self.__get_srs_config()
+        self.__freq_domain_positions.clear()
         print("SrsResourceMapper: cell_bw", self.__cell_bandwidth, 'cell_type', self.__cell_type, 'srs_cell_bw_config', self.__srs_cell_bw_config, \
             'srs_bw_config', self.__srs_bw_config, 'k_tc', self.__k_tc, 'm_srs', self.__m_srs, 'N_b', self.__N_b)
 
@@ -18,9 +19,19 @@ class SrsResourceMapper:
         self.__m_srs = self.__m_srs_bw_config[self.__srs_cell_bw_config][self.__srs_bw_config][srs_3gpp.m_srs_position]
         self.__N_b = self.__m_srs_bw_config[self.__srs_cell_bw_config][self.__srs_bw_config][srs_3gpp.N_b_position]
 
-    def __calc_k_0_region_start(self):
+    def __calc_k_0_region_start(self, tti):
         m_srs_0 = self.__m_srs_bw_config[self.__srs_cell_bw_config][0][srs_3gpp.m_srs_position]
-        return srs_3gpp.N_sc_RB*(math.floor(srs_3gpp.N_UL_RB.get(self.__cell_bandwidth) / 2) - (m_srs_0 / 2))
+        if self.__cell_type == 'FDD':
+            return srs_3gpp.N_sc_RB * (math.floor(srs_3gpp.N_UL_RB.get(self.__cell_bandwidth) / 2) - (m_srs_0 / 2))
+        else:
+            m_srs_max = m_srs_0
+            #sub_fn = tti % 10
+            #n_half_frame = sub_fn/(srs_3gpp.ttis_in_frame/2)
+
+            #if n_half_frame % 2 == 0:
+            return srs_3gpp.N_sc_RB*(srs_3gpp.N_UL_RB.get(self.__cell_bandwidth)-m_srs_max)
+            #else:
+            #return 0
 
     def __calc_sounding_sequence_length(self, b):
         m_srs_b = self.__m_srs_bw_config[self.__srs_cell_bw_config][b][srs_3gpp.m_srs_position]
@@ -28,7 +39,7 @@ class SrsResourceMapper:
         return m_sc_b_rs
 
     def __calc_freq_domain_starting_point(self, freq_domain_config, tti):
-        k_0_reg_start = self.__calc_k_0_region_start()
+        k_0_reg_start = self.__calc_k_0_region_start(tti)
 
         srs_position = 0
         for b in range(0, (self.__srs_bw_config+1)):
@@ -77,7 +88,10 @@ class SrsResourceMapper:
     def get_srs_resource_fd_map(self, tti, freq_domain_config, resource_map_fd):
         freq_domain_starting_point = self.__calc_freq_domain_starting_point(freq_domain_config, tti)
         freq_domain_seq_length = self.__calc_sounding_sequence_length(self.__srs_bw_config)
-        #print('tti', tti, 'freq_domain_config', freq_domain_config, 'freq_domain_starting_point', freq_domain_starting_point, 'freq_domain_seq_length', freq_domain_seq_length)
+
+        if all(x != freq_domain_starting_point for x in self.__freq_domain_positions):
+            self.__freq_domain_positions.append(freq_domain_starting_point)
+            print("cell_srsbw", self.__srs_cell_bw_config, "bwsrs", self.__srs_bw_config,  "freq_domain_starting_point", freq_domain_starting_point)
 
         for k in range(int(freq_domain_starting_point), int(freq_domain_starting_point+freq_domain_seq_length*2), 2):
             resource_map_fd[k] = freq_domain_starting_point
@@ -94,5 +108,6 @@ class SrsResourceMapper:
     __k_tc = None
     __srs_cyclic_shift = 0
     __b_hop = 0
+    __freq_domain_positions = []
 
 

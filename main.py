@@ -7,6 +7,9 @@ import matplotlib.pyplot as pyplt
 
 #srs_cell_bandwidth_config = 0
 #srs_bandwidth_config = 3
+allowed_c_srs_configs = []
+allowed_b_srs_configs = []
+
 transmission_comb = 0
 cell_bandwidth = '20'
 cell_type = 'FDD'
@@ -21,7 +24,7 @@ for csrs in range(len(srs_3gpp.srs_bandwidth_config)):
         ue_configuration = ue_config.UeConfig(bsrs, transmission_comb)
 
         srs_resource_mapper_ent = srs_resource_mapper.SrsResourceMapper(cell_configuration, ue_configuration)
-        avail_freq_domain_pos = 1#srs_resource_mapper_ent.get_available_freq_domain_pos()
+        avail_freq_domain_pos = srs_resource_mapper_ent.get_available_freq_domain_pos()
 
         # Plot and save
         pyplt.xlabel('Sub-carriers')
@@ -29,7 +32,7 @@ for csrs in range(len(srs_3gpp.srs_bandwidth_config)):
         y_axis = numpy.zeros_like(resource_map)
         fig, axs = pyplt.subplots(avail_freq_domain_pos)
 
-        label = "SRS_resource_util_single_freqDomainPos_(bw:", cell_bandwidth,"Csrs:", csrs, "Bsrs:", bsrs
+        label = "SRS_resource_util_single_freqDomainPos_(bw:", cell_bandwidth, "Csrs:", csrs, "Bsrs:", bsrs
         fig.suptitle(label)
         for freq_domain_pos in range(0, avail_freq_domain_pos):
             plot_title = "Distribution for freqDomainPosition:", freq_domain_pos
@@ -72,7 +75,7 @@ for csrs in range(len(srs_3gpp.srs_bandwidth_config)):
             text_to_write = "lowest_freq_group_index", lowest_freq_group_index, "highest_freq_group_index", highest_freq_group_index
             text_file.write(str(text_to_write))
             text_file.close()
-            print("lowest_freq_group_index", lowest_freq_group_index, "highest_freq_group_index", highest_freq_group_index)
+            #print("lowest_freq_group_index", lowest_freq_group_index, "highest_freq_group_index", highest_freq_group_index)
 
         del srs_resource_mapper_ent
 
